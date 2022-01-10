@@ -23,7 +23,8 @@ class Game extends React.Component {
 	}
 
 	getKeyWord() {
-		return 'koira';
+		let rnd = Math.floor(Math.random() * words.length);
+		return words[rnd];
 	}
 
 	handleKeyPress(i) {
