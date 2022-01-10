@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import words from './words.json'
 //import App from './App';
 
 const ROW_COUNT = 6;
 const LETTER_COUNT = 5;
+
+
 
 
 class Game extends React.Component {
@@ -29,6 +32,18 @@ class Game extends React.Component {
 
 			currentSquare = Math.max(this.state.currentSquare - 1, 0);
 		}
+		else if (i === 'enter') {
+			if (currentSquare === LETTER_COUNT && letters[this.state.currentRow][this.state.currentSquare] !== ' ') {
+				let word = '';
+				letters[this.state.currentRow].forEach(element => {
+					word += element
+				});
+
+				if (this.checkWord(word)) {
+					currentRow = Math.min(currentRow + 1, ROW_COUNT);
+				}
+			}
+		}
 		else {
 			if (this.state.currentRow < ROW_COUNT && this.state.currentSquare < LETTER_COUNT && letters[this.state.currentRow][this.state.currentSquare] === ' ') {
 				letters[this.state.currentRow][this.state.currentSquare] = i;
@@ -42,6 +57,19 @@ class Game extends React.Component {
 			currentSquare: currentSquare,
 			letters: letters
 		});
+	}
+
+	checkWord(word) {
+		for (let index = 0; index < words.length; index++) {
+			if (word.toLowerCase() === words[index]) {
+				console.log('found word!');
+
+				return true;
+			}
+		}
+
+		console.log('no such word');
+		return false;
 	}
 
 	render() {
@@ -128,6 +156,7 @@ class Keyboard extends React.Component {
 				</div>
 				<div className='keyboard-row'>
 					{this.state.keysMid.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
+					<KeyboardButton key='enter' letter='ENTER' onClick={i => this.props.onClick('enter')}></KeyboardButton>
 				</div>
 				<div className='keyboard-row'>
 					{this.state.keysBot.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
