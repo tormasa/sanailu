@@ -41,6 +41,7 @@ class Game extends React.Component {
 
 				if (this.checkWord(word)) {
 					currentRow = Math.min(currentRow + 1, ROW_COUNT);
+					currentSquare = 0;
 				}
 			}
 		}
