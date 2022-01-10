@@ -1,17 +1,153 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+//import App from './App';
+
+const ROW_COUNT = 6;
+const LETTER_COUNT = 5;
+
+
+class Game extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			currentRow: 0,
+			currentSquare: 0,
+			letters: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(' '))
+		}
+	}
+
+	handleKeyPress(i) {
+		const letters = this.state.letters.slice();
+		var currentRow = this.state.currentRow;
+		var currentSquare = this.state.currentSquare;
+
+		if (i === 'backspace') {
+			if (this.state.currentSquare > 0) {
+				letters[this.state.currentRow][this.state.currentSquare - 1] = ' ';
+			}
+
+			currentSquare = Math.max(this.state.currentSquare - 1, 0);
+		}
+		else {
+			if (this.state.currentRow < ROW_COUNT && this.state.currentSquare < LETTER_COUNT && letters[this.state.currentRow][this.state.currentSquare] === ' ') {
+				letters[this.state.currentRow][this.state.currentSquare] = i;
+			}
+
+			currentSquare = Math.min(this.state.currentSquare + 1, LETTER_COUNT);
+		}
+
+		this.setState({
+			currentRow: currentRow,
+			currentSquare: currentSquare,
+			letters: letters
+		});
+	}
+
+	render() {
+		return (
+			<div className='game'>
+				<div className='letter-board'>
+					<Board 
+						writeRow={this.state.writeRow}
+						writeSquare={this.state.writeSquare}
+						writeKey={this.state.writeKey}
+						letters={this.state.letters}
+					/>
+				</div>
+				<div className='keyboard-container'>
+					<Keyboard 
+						onClick={(i) => this.handleKeyPress(i)}
+					/>
+				</div>
+			</div>
+		);
+	}
+}
+
+class Board extends React.Component {
+	renderRow(row) {
+		
+		return (
+			<div className='letter-row'>
+				{this.renderSquare(row, 0)}
+				{this.renderSquare(row, 1)}
+				{this.renderSquare(row, 2)}
+				{this.renderSquare(row, 3)}
+				{this.renderSquare(row, 4)}
+			</div>
+		);
+	}
+
+	renderSquare(row, i) {
+		return (
+			<Square 
+				letter={this.props.letters[row][i]}
+			/>
+		);
+	}
+
+	render() {
+		return(
+			<div>
+				{this.renderRow(0)}
+				{this.renderRow(1)}
+				{this.renderRow(2)}
+				{this.renderRow(3)}
+				{this.renderRow(4)}
+				{this.renderRow(5)}
+			</div>
+		);
+	}
+}
+
+function Square(props) {
+	return (
+		<button className='square'>
+			{props.letter}
+		</button>
+	);
+}
+
+class Keyboard extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			keysTop: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+			keysMid: ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä'],
+			keysBot: ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
+		}
+	}
+
+	render() {
+		return(
+			<div className='keyboard'> 
+				<div className='keyboard-row'>
+					{this.state.keysTop.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
+					<KeyboardButton key='backspace' letter='<-' onClick={i => this.props.onClick('backspace')}></KeyboardButton>
+				</div>
+				<div className='keyboard-row'>
+					{this.state.keysMid.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
+				</div>
+				<div className='keyboard-row'>
+					{this.state.keysBot.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
+				</div>
+			</div>
+		);
+	}
+}
+
+function KeyboardButton(props) {
+	return (
+		<button className='keyboard-button' onClick={props.onClick}>
+			{props.letter}
+		</button>
+	);
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+	<React.StrictMode>
+		<Game />
+	</React.StrictMode>,
+	document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
