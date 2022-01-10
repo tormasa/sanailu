@@ -11,6 +11,9 @@
 # production
 /build
 
+# word_data
+/word_data/sanalista.xml
+
 # misc
 .DS_Store
 .env.local
