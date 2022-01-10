@@ -32,6 +32,22 @@ ol, ul {
 	width: 34px;
 }
 
+.square[letterStatus='unguessed'] {
+	background: #fff;
+}
+
+.square[letterStatus='none'] {
+	background: rgb(70, 70, 70);
+}
+
+.square[letterStatus='includes'] {
+	background: rgb(186, 196, 55);
+}
+
+.square[letterStatus='right'] {
+	background: rgb(45, 170, 45);
+}
+
 .square:focus {
 	outline: none;
 }

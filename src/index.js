@@ -16,14 +16,21 @@ class Game extends React.Component {
 		this.state = {
 			currentRow: 0,
 			currentSquare: 0,
-			letters: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(' '))
+			letters: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(' ')),
+			letterStatus: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill('unguessed')),
+			keyWord: this.getKeyWord()
 		}
+	}
+
+	getKeyWord() {
+		return 'koira';
 	}
 
 	handleKeyPress(i) {
 		const letters = this.state.letters.slice();
 		var currentRow = this.state.currentRow;
 		var currentSquare = this.state.currentSquare;
+		const letterStatus = this.state.letterStatus.slice();
 
 		if (i === 'backspace') {
 			if (this.state.currentSquare > 0) {
@@ -35,11 +42,15 @@ class Game extends React.Component {
 		else if (i === 'enter') {
 			if (currentSquare === LETTER_COUNT && letters[this.state.currentRow][this.state.currentSquare] !== ' ') {
 				let word = '';
-				letters[this.state.currentRow].forEach(element => {
+				letters[currentRow].forEach(element => {
 					word += element
 				});
 
 				if (this.checkWord(word)) {
+					for (let index = 0; index < letters[currentRow].length; index++) {
+						letterStatus[currentRow][index] = this.checkLetter(letters[currentRow][index], index);
+					}
+
 					currentRow = Math.min(currentRow + 1, ROW_COUNT);
 					currentSquare = 0;
 				}
@@ -56,32 +67,45 @@ class Game extends React.Component {
 		this.setState({
 			currentRow: currentRow,
 			currentSquare: currentSquare,
-			letters: letters
+			letters: letters,
+			letterStatus: letterStatus,
+			keyWord: this.state.keyWord
 		});
 	}
 
 	checkWord(word) {
 		for (let index = 0; index < words.length; index++) {
 			if (word.toLowerCase() === words[index]) {
-				console.log('found word!');
-
 				return true;
 			}
 		}
 
-		console.log('no such word');
 		return false;
+	}
+
+	checkLetter(letter, pos) {
+		let status = 'none';
+
+		if (this.state.keyWord.includes(letter.toLowerCase())) {
+			status = 'includes';
+
+			if (this.state.keyWord[pos] === letter.toLowerCase()) {
+				status = 'right';
+			}
+		}
+
+		console.log(letter +" is " +status);
+
+		return status;
 	}
 
 	render() {
 		return (
 			<div className='game'>
 				<div className='letter-board'>
-					<Board 
-						writeRow={this.state.writeRow}
-						writeSquare={this.state.writeSquare}
-						writeKey={this.state.writeKey}
+					<Board
 						letters={this.state.letters}
+						letterStatus={this.state.letterStatus}
 					/>
 				</div>
 				<div className='keyboard-container'>
@@ -109,9 +133,12 @@ class Board extends React.Component {
 	}
 
 	renderSquare(row, i) {
+		console.log("letterstatus: " +this.props.letterStatus[row][i]);
+
 		return (
 			<Square 
 				letter={this.props.letters[row][i]}
+				letterStatus={this.props.letterStatus[row][i]}
 			/>
 		);
 	}
@@ -132,7 +159,7 @@ class Board extends React.Component {
 
 function Square(props) {
 	return (
-		<button className='square'>
+		<button className='square' letterStatus={props.letterStatus}>
 			{props.letter}
 		</button>
 	);
