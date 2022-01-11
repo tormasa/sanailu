@@ -14,21 +14,24 @@ class Game extends React.Component {
 			currentSquare: 0,
 			letters: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(' ')),
 			letterStatus: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill('unguessed')),
-			keyWord: this.getKeyWord()
+			keyWord: this.getKeyWord(),
+			animating: Array(LETTER_COUNT).fill(false)
 		}
 	}
 
 	getKeyWord() {
 		let rnd = Math.floor(Math.random() * words.length);
-		//return words[rnd];
-		return 'koira';
+		return words[rnd];
 	}
 
 	handleKeyPress(i) {
+		if (this.state.animating.every(Boolean)) return;
+
 		const letters = this.state.letters.slice();
 		var currentRow = this.state.currentRow;
 		var currentSquare = this.state.currentSquare;
 		const letterStatus = this.state.letterStatus.slice();
+		let animating = this.state.animating;
 
 		if (i === 'backspace') {
 			if (this.state.currentSquare > 0) {
@@ -45,12 +48,13 @@ class Game extends React.Component {
 				});
 
 				if (this.checkWord(word)) {
-					for (let index = 0; index < letters[currentRow].length; index++) {
-						letterStatus[currentRow][index] = this.checkLetter(letters[currentRow][index], index);
-					}
+					letterStatus[currentRow] = this.checkGuess(letters[currentRow]);
 
 					currentRow = Math.min(currentRow + 1, ROW_COUNT);
 					currentSquare = 0;
+
+					// Käynnistetään animaatiot
+					animating = Array(LETTER_COUNT).fill(true);
 				}
 			}
 		}
@@ -67,7 +71,7 @@ class Game extends React.Component {
 			currentSquare: currentSquare,
 			letters: letters,
 			letterStatus: letterStatus,
-			keyWord: this.state.keyWord
+			animating: animating
 		});
 	}
 
@@ -81,20 +85,37 @@ class Game extends React.Component {
 		return false;
 	}
 
-	checkLetter(letter, pos) {
-		let status = 'none';
+	checkGuess(guess) {
+		let statusArr = Array(LETTER_COUNT).fill('none')
+		let keywordArr = this.state.keyWord.split('');
 
-		if (this.state.keyWord.includes(letter.toLowerCase())) {
-			status = 'includes';
+		console.log(keywordArr);
 
-			if (this.state.keyWord[pos] === letter.toLowerCase()) {
-				status = 'right';
+		// Ensin tarkistetaan onko kirjaimet oikeilla paikoilla
+		for (let index = 0; index < keywordArr.length; index++) {
+			if (keywordArr[index].match(guess[index].toLowerCase())) {
+				statusArr[index] = 'right';
+				keywordArr[index] = ' ';
 			}
 		}
 
-		console.log(letter +" is " +status);
+		// Sitten tarkistetaan jäljelle jääneistä kirjaimista esiintyykö niitä arvauksessa
+		for (let index = 0; index < keywordArr.length; index++) {
+			if (keywordArr[index] !== ' ') {
+				for (let j = 0; j < guess.length; j++) {
+					if (keywordArr[index].match(guess[j].toLowerCase())) {
+						statusArr[j] = 'includes';
+						break;
+					}
+				}
+			}
+		}
 
-		return status;
+		return statusArr;
+	}
+
+	onAnimationEnd(i) {
+		console.log("animation ended " +i);
 	}
 
 	render() {
@@ -104,11 +125,12 @@ class Game extends React.Component {
 					<Board
 						letters={this.state.letters}
 						letterstatus={this.state.letterStatus}
+						onAnimationEnd={(i) => this.onAnimationEnd(i)}
 					/>
 				</div>
 				<div className='keyboard-container'>
 					<Keyboard 
-						onClick={(i) => this.handleKeyPress(i)}
+						onClick={i => this.handleKeyPress(i)}
 					/>
 				</div>
 			</div>
@@ -137,6 +159,7 @@ class Board extends React.Component {
 			<Square 
 				letter={this.props.letters[row][i]}
 				letterstatus={this.props.letterstatus[row][i]}
+				onAnimationEnd={a => this.props.onAnimationEnd(i)}
 			/>
 		);
 	}
@@ -157,8 +180,12 @@ class Board extends React.Component {
 
 function Square(props) {
 	return (
-		<button className='square' letterstatus={props.letterstatus}>
-			{props.letter}
+		<button 
+			className='square' 
+			letterstatus={props.letterstatus}
+			onAnimationEnd={props.onAnimationEnd}
+		>
+				{props.letter}
 		</button>
 	);
 }
