@@ -1,14 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import words from './words.json'
-//import App from './App';
+import words from './words.json';
 
 const ROW_COUNT = 6;
 const LETTER_COUNT = 5;
-
-
-
 
 class Game extends React.Component {
 	constructor(props) {
@@ -24,7 +20,8 @@ class Game extends React.Component {
 
 	getKeyWord() {
 		let rnd = Math.floor(Math.random() * words.length);
-		return words[rnd];
+		//return words[rnd];
+		return 'koira';
 	}
 
 	handleKeyPress(i) {
@@ -103,10 +100,10 @@ class Game extends React.Component {
 	render() {
 		return (
 			<div className='game'>
-				<div className='letter-board'>
+				<div className='letter-board-container'>
 					<Board
 						letters={this.state.letters}
-						letterStatus={this.state.letterStatus}
+						letterstatus={this.state.letterStatus}
 					/>
 				</div>
 				<div className='keyboard-container'>
@@ -134,19 +131,18 @@ class Board extends React.Component {
 	}
 
 	renderSquare(row, i) {
-		console.log("letterstatus: " +this.props.letterStatus[row][i]);
 
 		return (
 			<Square 
 				letter={this.props.letters[row][i]}
-				letterStatus={this.props.letterStatus[row][i]}
+				letterstatus={this.props.letterstatus[row][i]}
 			/>
 		);
 	}
 
 	render() {
 		return(
-			<div>
+			<div className='letter-board'>
 				{this.renderRow(0)}
 				{this.renderRow(1)}
 				{this.renderRow(2)}
@@ -160,7 +156,7 @@ class Board extends React.Component {
 
 function Square(props) {
 	return (
-		<button className='square' letterStatus={props.letterStatus}>
+		<button className='square' letterstatus={props.letterstatus}>
 			{props.letter}
 		</button>
 	);
@@ -181,11 +177,11 @@ class Keyboard extends React.Component {
 			<div className='keyboard'> 
 				<div className='keyboard-row'>
 					{this.state.keysTop.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
-					<KeyboardButton key='backspace' letter='<-' onClick={i => this.props.onClick('backspace')}></KeyboardButton>
+					<KeyboardButton key='backspace' letter='backspace' onClick={i => this.props.onClick('backspace')}></KeyboardButton>
 				</div>
 				<div className='keyboard-row'>
 					{this.state.keysMid.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
-					<KeyboardButton key='enter' letter='ENTER' onClick={i => this.props.onClick('enter')}></KeyboardButton>
+					<KeyboardButton key='enter' letter='enter' onClick={i => this.props.onClick('enter')}></KeyboardButton>
 				</div>
 				<div className='keyboard-row'>
 					{this.state.keysBot.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
@@ -196,11 +192,25 @@ class Keyboard extends React.Component {
 }
 
 function KeyboardButton(props) {
-	return (
-		<button className='keyboard-button' onClick={props.onClick}>
-			{props.letter}
-		</button>
-	);
+	if (props.letter === 'backspace') {
+		return (
+			<button className='keyboard-button-backspace' onClick={props.onClick}>
+			</button>
+		);
+	}
+	else if (props.letter === 'enter') {
+		return (
+			<button className='keyboard-button-enter' onClick={props.onClick}>
+			</button>
+		);
+	}
+	else {
+		return (
+			<button className='keyboard-button' onClick={props.onClick}>
+				{props.letter}
+			</button>
+		);
+	}
 }
 
 ReactDOM.render(

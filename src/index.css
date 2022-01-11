@@ -12,24 +12,50 @@ ol, ul {
 	content: "";
 	display: table;
 }
-  
-.status {
-	margin-bottom: 10px;
+
+.game {
+	display: flex;
+	flex-direction: column;
+	max-width: 500px;
+	margin: 0 auto;
+}
+
+.letter-board-container {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.letter-board {
+	width: 350px;
+	height: 420px;
+	display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    grid-gap: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.letter-row {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	grid-gap: 5px;
 }
 
 .square {
-	background: #fff;
-	border: 1px solid #999;
-	float: left;
-	font-size: 24px;
-	font-weight: bold;
-	line-height: 34px;
-	height: 34px;
-	margin-right: -1px;
-	margin-top: -1px;
-	padding: 0;
-	text-align: center;
-	width: 34px;
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    line-height: 2rem;
+    font-weight: bold;
+    vertical-align: middle;
+    box-sizing: border-box;
+    text-transform: uppercase;
+    user-select: none;
 }
 
 .square[letterStatus='unguessed'] {
@@ -37,7 +63,7 @@ ol, ul {
 }
 
 .square[letterStatus='none'] {
-	background: rgb(70, 70, 70);
+	background: rgb(100, 100, 100);
 }
 
 .square[letterStatus='includes'] {
@@ -56,13 +82,30 @@ ol, ul {
 	background: #ddd;
 }
 
-.game {
-	display: flex;
-	flex-direction: row;
+.square:focus, .square:hover {
+	animation: wobble 1s 1;
 }
 
-.game-info {
-	margin-left: 20px;
+@keyframes wobble {
+	25% {
+		transform: rotate(15deg);
+	}
+	50% {
+		transform: rotate(-30deg);
+	}
+	75% {
+		transform: rotate(5deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
+}
+
+.keyboard-container {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+	margin: 10px;
 }
 
 .keyboard-button {
@@ -78,6 +121,30 @@ ol, ul {
 	padding: 0;
 	text-align: center;
 	width: 34px;
+}
+
+.keyboard-button-backspace {
+	background-image: url("./backspace.png");
+	background-size: 80%;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 34px;
+	width: 34px;
+	border: 1px solid #999;
+	margin-right: -1px;
+	margin-top: -1px;
+}
+
+.keyboard-button-enter {
+	background-image: url("./enter.png");
+	background-size: 90%;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 34px;
+	width: 34px;
+	border: 1px solid #999;
+	margin-right: -1px;
+	margin-top: -1px;
 }
 
 .keyboard-row {
