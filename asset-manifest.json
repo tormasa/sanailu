@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/sanailu/static/css/main.3cff9dc2.css",
-    "main.js": "/sanailu/static/js/main.506524be.js",
+    "main.css": "/sanailu/static/css/main.82c8c4ba.css",
+    "main.js": "/sanailu/static/js/main.4ad8fa8c.js",
     "static/media/backspace.png": "/sanailu/static/media/backspace.5f818760c9777f29d2c6.png",
     "index.html": "/sanailu/index.html",
-    "main.3cff9dc2.css.map": "/sanailu/static/css/main.3cff9dc2.css.map",
-    "main.506524be.js.map": "/sanailu/static/js/main.506524be.js.map"
+    "main.82c8c4ba.css.map": "/sanailu/static/css/main.82c8c4ba.css.map",
+    "main.4ad8fa8c.js.map": "/sanailu/static/js/main.4ad8fa8c.js.map"
   },
   "entrypoints": [
-    "static/css/main.3cff9dc2.css",
-    "static/js/main.506524be.js"
+    "static/css/main.82c8c4ba.css",
+    "static/js/main.4ad8fa8c.js"
   ]
 }
