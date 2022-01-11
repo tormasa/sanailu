@@ -75,23 +75,23 @@ ol, ul {
 .square[letterStatus='includes'] {
 	--bg-color: var(--includes-color);
 	background:#fff;
-	animation: reveal 1s 1;
-	animation-fill-mode: forwards;
 }
 
 .square[letterStatus='right'] {
 	--bg-color: var(--right-color);
 	background:#fff;
-	animation: reveal 1s 1;
-	animation-fill-mode: forwards;
 }
 
 .animation-square {
-	animation: reveal 1s 1;
+	animation: reveal 0.5s 1;
 	animation-fill-mode: forwards;
 }
 
 @keyframes reveal {
+	0% {
+		transform: scaleY(100%);
+		background:#fff;
+	}
 	12.5% { transform: scaleY(75%); }
 	25% { transform: scaleY(50%); }
 	37.5% { 

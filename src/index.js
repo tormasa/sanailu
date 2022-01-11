@@ -15,13 +15,15 @@ class Game extends React.Component {
 			letters: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(' ')),
 			letterStatus: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill('unguessed')),
 			keyWord: this.getKeyWord(),
-			animating: Array(LETTER_COUNT).fill(false)
+			animating: Array(LETTER_COUNT).fill(false),
+			animationStart: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(false))
 		}
 	}
 
 	getKeyWord() {
 		let rnd = Math.floor(Math.random() * words.length);
 		return words[rnd];
+		//return 'aaloe';
 	}
 
 	handleKeyPress(i) {
@@ -31,7 +33,8 @@ class Game extends React.Component {
 		var currentRow = this.state.currentRow;
 		var currentSquare = this.state.currentSquare;
 		const letterStatus = this.state.letterStatus.slice();
-		let animating = this.state.animating;
+		let animating = this.state.animating.slice();
+		let animationStart = this.state.animationStart.slice();
 
 		if (i === 'backspace') {
 			if (this.state.currentSquare > 0) {
@@ -50,11 +53,12 @@ class Game extends React.Component {
 				if (this.checkWord(word)) {
 					letterStatus[currentRow] = this.checkGuess(letters[currentRow]);
 
-					currentRow = Math.min(currentRow + 1, ROW_COUNT);
-					currentSquare = 0;
-
 					// Käynnistetään animaatiot
 					animating = Array(LETTER_COUNT).fill(true);
+					animationStart[currentRow][0] = true;
+
+					currentRow = Math.min(currentRow + 1, ROW_COUNT);
+					currentSquare = 0;
 				}
 			}
 		}
@@ -71,7 +75,8 @@ class Game extends React.Component {
 			currentSquare: currentSquare,
 			letters: letters,
 			letterStatus: letterStatus,
-			animating: animating
+			animating: animating,
+			animationStart: animationStart
 		});
 	}
 
@@ -115,7 +120,20 @@ class Game extends React.Component {
 	}
 
 	onAnimationEnd(i) {
-		console.log("animation ended " +i);
+		let animating = this.state.animating.slice();
+		let animationStart = this.state.animationStart.slice();
+
+		animating[i] = false;
+
+		// Vielä animoidaan
+		if (i < LETTER_COUNT - 1) {
+			animationStart[this.state.currentRow-1][i+1] = true;
+		}
+
+		this.setState({
+			animating: animating,
+			animationStart: animationStart
+		});
 	}
 
 	render() {
@@ -126,6 +144,7 @@ class Game extends React.Component {
 						letters={this.state.letters}
 						letterstatus={this.state.letterStatus}
 						onAnimationEnd={(i) => this.onAnimationEnd(i)}
+						animationStart={this.state.animationStart}
 					/>
 				</div>
 				<div className='keyboard-container'>
@@ -160,6 +179,7 @@ class Board extends React.Component {
 				letter={this.props.letters[row][i]}
 				letterstatus={this.props.letterstatus[row][i]}
 				onAnimationEnd={a => this.props.onAnimationEnd(i)}
+				animationStart={this.props.animationStart[row][i]}
 			/>
 		);
 	}
@@ -179,9 +199,12 @@ class Board extends React.Component {
 }
 
 function Square(props) {
+	let cName = 'square';
+	if (props.animationStart) cName = 'square animation-square'
+
 	return (
 		<button 
-			className='square' 
+			className={cName}
 			letterstatus={props.letterstatus}
 			onAnimationEnd={props.onAnimationEnd}
 		>
