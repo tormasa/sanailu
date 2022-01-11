@@ -82,7 +82,7 @@ class Game extends React.Component {
 
 	checkWord(word) {
 		for (let index = 0; index < words.length; index++) {
-			if (word.toLowerCase() === words[index]) {
+			if (word === words[index]) {
 				return true;
 			}
 		}
@@ -98,7 +98,7 @@ class Game extends React.Component {
 
 		// Ensin tarkistetaan onko kirjaimet oikeilla paikoilla
 		for (let index = 0; index < keywordArr.length; index++) {
-			if (keywordArr[index].match(guess[index].toLowerCase())) {
+			if (keywordArr[index].match(guess[index])) {
 				statusArr[index] = 'right';
 				keywordArr[index] = ' ';
 			}
@@ -108,7 +108,7 @@ class Game extends React.Component {
 		for (let index = 0; index < keywordArr.length; index++) {
 			if (keywordArr[index] !== ' ') {
 				for (let j = 0; j < guess.length; j++) {
-					if (keywordArr[index].match(guess[j].toLowerCase())) {
+					if (keywordArr[index].match(guess[j])) {
 						statusArr[j] = 'includes';
 						break;
 					}
@@ -217,9 +217,9 @@ class Keyboard extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			keysTop: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-			keysMid: ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä'],
-			keysBot: ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
+			keysTop: ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+			keysMid: ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä'],
+			keysBot: ['z', 'x', 'c', 'v', 'b', 'n', 'm']
 		}
 	}
 
@@ -227,15 +227,19 @@ class Keyboard extends React.Component {
 		return(
 			<div className='keyboard'> 
 				<div className='keyboard-row'>
+					<div className='spacer'></div>
 					{this.state.keysTop.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
-					<KeyboardButton key='backspace' letter='backspace' onClick={i => this.props.onClick('backspace')}></KeyboardButton>
+					<div className='spacer'></div>
 				</div>
 				<div className='keyboard-row'>
 					{this.state.keysMid.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
-					<KeyboardButton key='enter' letter='enter' onClick={i => this.props.onClick('enter')}></KeyboardButton>
 				</div>
 				<div className='keyboard-row'>
+					<div className='spacer'></div>
+					<KeyboardButton key='backspace' letter='backspace' onClick={i => this.props.onClick('backspace')}></KeyboardButton>
 					{this.state.keysBot.map(key => <KeyboardButton key={key} letter={key} onClick={i => this.props.onClick(key)}></KeyboardButton>)}
+					<KeyboardButton key='enter' letter='enter' onClick={i => this.props.onClick('enter')}></KeyboardButton>
+					<div className='spacer'></div>
 				</div>
 			</div>
 		);
