@@ -63,41 +63,40 @@ ol, ul {
 }
 
 .square[letterStatus='none'] {
-	background: rgb(100, 100, 100);
+	--bg-color: rgb(100, 100, 100);
+	background:#fff;
+	animation: reveal 1s 1;
+	animation-fill-mode: forwards;
 }
 
 .square[letterStatus='includes'] {
-	background: rgb(186, 196, 55);
+	--bg-color: rgb(186, 196, 55);
+	background:#fff;
+	animation: reveal 1s 1;
+	animation-fill-mode: forwards;
 }
 
 .square[letterStatus='right'] {
-	background: rgb(45, 170, 45);
+	--bg-color: rgb(45, 170, 45);
+	background:#fff;
+	animation: reveal 1s 1;
+	animation-fill-mode: forwards;
 }
 
-.square:focus {
-	outline: none;
-}
-
-.kbd-navigation .square:focus {
-	background: #ddd;
-}
-
-.square:focus, .square:hover {
-	animation: wobble 1s 1;
-}
-
-@keyframes wobble {
-	25% {
-		transform: rotate(15deg);
+@keyframes reveal {
+	12.5% { transform: scaleY(75%); }
+	25% { transform: scaleY(50%); }
+	37.5% { 
+		transform: scaleY(25%);
+		background:#fff;
 	}
-	50% {
-		transform: rotate(-30deg);
-	}
-	75% {
-		transform: rotate(5deg);
-	}
+	50% { transform: scaleY(5%); }
+	62.5% { transform: scaleY(25%); }
+	75% { transform: scaleY(50%); }
+	87.5% { transform: scaleY(75%); }
 	100% {
-		transform: rotate(0deg);
+		transform: scaleY(100%);
+		background: var(--bg-color);
 	}
 }
 
@@ -106,6 +105,11 @@ ol, ul {
     justify-content: center;
     align-items: center;
 	margin: 10px;
+}
+
+.keyboard {
+	display: flex;
+	flex-direction: column;
 }
 
 .keyboard-button {
@@ -152,4 +156,5 @@ ol, ul {
     width: 100%;
     margin: 0 auto 8px;
     touch-action: manipulation;
+	justify-content: center;
 }

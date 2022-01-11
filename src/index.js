@@ -132,6 +132,7 @@ class Board extends React.Component {
 
 	renderSquare(row, i) {
 
+
 		return (
 			<Square 
 				letter={this.props.letters[row][i]}
