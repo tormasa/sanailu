@@ -23,7 +23,6 @@ class Game extends React.Component {
 	getKeyWord() {
 		let rnd = Math.floor(Math.random() * words.length);
 		return words[rnd];
-		//return 'aaloe';
 	}
 
 	handleKeyPress(i) {
@@ -108,7 +107,7 @@ class Game extends React.Component {
 		for (let index = 0; index < keywordArr.length; index++) {
 			if (keywordArr[index] !== ' ') {
 				for (let j = 0; j < guess.length; j++) {
-					if (keywordArr[index].match(guess[j])) {
+					if (keywordArr[index].match(guess[j]) && statusArr[j] !== 'right') {
 						statusArr[j] = 'includes';
 						break;
 					}
