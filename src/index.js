@@ -16,7 +16,8 @@ class Game extends React.Component {
 			letterStatus: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill('unguessed')),
 			keyWord: this.getKeyWord(),
 			animating: Array(LETTER_COUNT).fill(false),
-			animationStart: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(false))
+			animationStart: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(false)),
+			wrongGuess: false
 		}
 	}
 
@@ -34,6 +35,7 @@ class Game extends React.Component {
 		const letterStatus = this.state.letterStatus.slice();
 		let animating = this.state.animating.slice();
 		let animationStart = this.state.animationStart.slice();
+		let wrongGuess = false;
 
 		if (i === 'backspace') {
 			if (this.state.currentSquare > 0) {
@@ -49,6 +51,7 @@ class Game extends React.Component {
 					word += element
 				});
 
+				// Sana löytyy sanalistasta, joten tarkistetaan kirjaimet
 				if (this.checkWord(word)) {
 					letterStatus[currentRow] = this.checkGuess(letters[currentRow]);
 
@@ -58,6 +61,15 @@ class Game extends React.Component {
 
 					currentRow = Math.min(currentRow + 1, ROW_COUNT);
 					currentSquare = 0;
+				}
+				// Sana ei löydy sanalistasta, joten kerrotaan käyttäjälle siitä
+				else {
+					animating = Array(LETTER_COUNT).fill(true);
+					for (let index = 0; index < animationStart[currentRow].length; index++) {
+						animationStart[currentRow][index] = true;
+					}
+					
+					wrongGuess = true;
 				}
 			}
 		}
@@ -75,7 +87,8 @@ class Game extends React.Component {
 			letters: letters,
 			letterStatus: letterStatus,
 			animating: animating,
-			animationStart: animationStart
+			animationStart: animationStart,
+			wrongGuess: wrongGuess
 		});
 	}
 
@@ -121,17 +134,31 @@ class Game extends React.Component {
 	onAnimationEnd(i) {
 		let animating = this.state.animating.slice();
 		let animationStart = this.state.animationStart.slice();
+		let wrongGuess = this.state.wrongGuess;
 
-		animating[i] = false;
+		// Animointi johtuu väärän sanan lähetyksestä
+		if (wrongGuess) {
+			animating[i] = false;
+			animationStart[this.state.currentRow][i] = false;
 
-		// Vielä animoidaan
-		if (i < LETTER_COUNT - 1) {
-			animationStart[this.state.currentRow-1][i+1] = true;
+			let isFalse = (value) => value === false;
+
+			if (animating.every(isFalse)) wrongGuess = false;
+		}
+		// Animointi johtuu oikean sanan lähetyksestä
+		else {
+			animating[i] = false;
+
+			// Vielä animoidaan
+			if (i < LETTER_COUNT - 1) {
+				animationStart[this.state.currentRow-1][i+1] = true;
+			}
 		}
 
 		this.setState({
 			animating: animating,
-			animationStart: animationStart
+			animationStart: animationStart,
+			wrongGuess: wrongGuess
 		});
 	}
 
@@ -199,7 +226,9 @@ class Board extends React.Component {
 
 function Square(props) {
 	let cName = 'square';
-	if (props.animationStart) cName = 'square animation-square'
+	//console.log(props.letterstatus);
+	if (props.animationStart && props.letterstatus !== 'unguessed') cName = 'square animation-square';
+	else if (props.animationStart) cName = 'square animation-square-wrong';
 
 	return (
 		<button 

@@ -2,6 +2,7 @@
 	--includes-color: rgb(186, 196, 55);
 	--right-color: rgb(45, 170, 45);
 	--keyboard-button-height: 48px;
+	--wrong-word-color: rgb(206, 36, 36);
 }
 
 body {
@@ -106,6 +107,29 @@ ol, ul {
 	100% {
 		transform: scaleY(100%);
 		background: var(--bg-color);
+	}
+}
+
+.animation-square-wrong {
+	animation: wrong-word 0.5s 1;
+	animation-fill-mode: forwards;
+}
+
+@keyframes wrong-word {
+	0% {
+		transform: translateX(10%);
+		background: var(--wrong-word-color);
+	}
+	12.5% { transform: translateX(-10%); }
+	25% { transform: translateX(10%); }
+	37.5% { transform: translateX(-10%); }
+	50% { transform: translateX(10%); }
+	62.5% { transform: translateX(-10%); }
+	75% { transform: translateX(10%); }
+	87.5% { transform: translateX(-10%); }
+	100% {
+		transform: translateX(0%);
+		background: var(--wrong-word-color);
 	}
 }
 
