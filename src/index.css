@@ -65,21 +65,21 @@ ol, ul {
     user-select: none;
 }
 
-.square[letterStatus='unguessed'] {
+.square[squarestatus='unguessed'] {
 	background: #fff;
 }
 
-.square[letterStatus='none'] {
+.square[squarestatus='none'] {
 	--bg-color: rgb(100, 100, 100);
 	background:#fff;
 }
 
-.square[letterStatus='includes'] {
+.square[squarestatus='includes'] {
 	--bg-color: var(--includes-color);
 	background:#fff;
 }
 
-.square[letterStatus='right'] {
+.square[squarestatus='right'] {
 	--bg-color: var(--right-color);
 	background:#fff;
 }

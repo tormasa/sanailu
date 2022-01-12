@@ -13,11 +13,12 @@ class Game extends React.Component {
 			currentRow: 0,
 			currentSquare: 0,
 			letters: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(' ')),
-			letterStatus: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill('unguessed')),
+			squareStatus: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill('unguessed')),
 			keyWord: this.getKeyWord(),
 			animating: Array(LETTER_COUNT).fill(false),
 			animationStart: Array(ROW_COUNT).fill(0).map(row => new Array(LETTER_COUNT).fill(false)),
-			wrongGuess: false
+			wrongGuess: false,
+			letterStatus: { }
 		}
 	}
 
@@ -32,10 +33,11 @@ class Game extends React.Component {
 		const letters = this.state.letters.slice();
 		var currentRow = this.state.currentRow;
 		var currentSquare = this.state.currentSquare;
-		const letterStatus = this.state.letterStatus.slice();
+		const squareStatus = this.state.squareStatus.slice();
 		let animating = this.state.animating.slice();
 		let animationStart = this.state.animationStart.slice();
 		let wrongGuess = false;
+		let letterStatus = this.state.letterStatus;
 
 		if (i === 'backspace') {
 			if (this.state.currentSquare > 0) {
@@ -53,7 +55,26 @@ class Game extends React.Component {
 
 				// Sana löytyy sanalistasta, joten tarkistetaan kirjaimet
 				if (this.checkWord(word)) {
-					letterStatus[currentRow] = this.checkGuess(letters[currentRow]);
+					squareStatus[currentRow] = this.checkGuess(letters[currentRow]);
+
+					console.log(letterStatus);
+
+					for (let i = 0; i < letters[currentRow].length; i++) {
+						// Jos on löydytetty oikean paikan kirjain, niin aina näppäimistössä vihreänä
+						if (squareStatus[currentRow][i] === 'right') {
+							letterStatus[letters[currentRow][i]] = squareStatus[currentRow][i];
+						}
+						// Jos ei ole asetettu näppäintä vihreäksi ja nyt saatiin sille keltainen status, niin päivitetään
+						else if (letterStatus[letters[currentRow][i] !== 'right'] && squareStatus[currentRow][i] === 'includes') {
+							letterStatus[letters[currentRow][i]] = squareStatus[currentRow][i];
+						}
+						// Jos näppäin ei ole vihreä eikä keltainen, niin päivitetään eli käytännössä harmaaksi
+						else if (letterStatus[letters[currentRow][i] !== 'includes']) {
+							letterStatus[letters[currentRow][i]] = squareStatus[currentRow][i];
+						}
+					}
+
+					console.log(letterStatus);
 
 					// Käynnistetään animaatiot
 					animating = Array(LETTER_COUNT).fill(true);
@@ -85,7 +106,7 @@ class Game extends React.Component {
 			currentRow: currentRow,
 			currentSquare: currentSquare,
 			letters: letters,
-			letterStatus: letterStatus,
+			squareStatus: squareStatus,
 			animating: animating,
 			animationStart: animationStart,
 			wrongGuess: wrongGuess
@@ -105,8 +126,6 @@ class Game extends React.Component {
 	checkGuess(guess) {
 		let statusArr = Array(LETTER_COUNT).fill('none')
 		let keywordArr = this.state.keyWord.split('');
-
-		console.log(keywordArr);
 
 		// Ensin tarkistetaan onko kirjaimet oikeilla paikoilla
 		for (let index = 0; index < keywordArr.length; index++) {
@@ -168,7 +187,7 @@ class Game extends React.Component {
 				<div className='letter-board-container'>
 					<Board
 						letters={this.state.letters}
-						letterstatus={this.state.letterStatus}
+						squarestatus={this.state.squareStatus}
 						onAnimationEnd={(i) => this.onAnimationEnd(i)}
 						animationStart={this.state.animationStart}
 					/>
@@ -203,7 +222,7 @@ class Board extends React.Component {
 		return (
 			<Square 
 				letter={this.props.letters[row][i]}
-				letterstatus={this.props.letterstatus[row][i]}
+				squarestatus={this.props.squarestatus[row][i]}
 				onAnimationEnd={a => this.props.onAnimationEnd(i)}
 				animationStart={this.props.animationStart[row][i]}
 			/>
@@ -226,14 +245,14 @@ class Board extends React.Component {
 
 function Square(props) {
 	let cName = 'square';
-	//console.log(props.letterstatus);
-	if (props.animationStart && props.letterstatus !== 'unguessed') cName = 'square animation-square';
+	//console.log(props.squarestatus);
+	if (props.animationStart && props.squarestatus !== 'unguessed') cName = 'square animation-square';
 	else if (props.animationStart) cName = 'square animation-square-wrong';
 
 	return (
 		<button 
 			className={cName}
-			letterstatus={props.letterstatus}
+			squarestatus={props.squarestatus}
 			onAnimationEnd={props.onAnimationEnd}
 		>
 				{props.letter}
