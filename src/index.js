@@ -109,7 +109,8 @@ class Game extends React.Component {
 			squareStatus: squareStatus,
 			animating: animating,
 			animationStart: animationStart,
-			wrongGuess: wrongGuess
+			wrongGuess: wrongGuess,
+			letterStatus: letterStatus
 		});
 	}
 
