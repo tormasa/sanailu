@@ -1,6 +1,7 @@
 :root {
 	--includes-color: rgb(186, 196, 55);
 	--right-color: rgb(45, 170, 45);
+	--none-color: rgb(100, 100, 100);
 	--keyboard-button-height: 48px;
 	--wrong-word-color: rgb(206, 36, 36);
 }
@@ -70,7 +71,7 @@ ol, ul {
 }
 
 .square[squarestatus='none'] {
-	--bg-color: rgb(100, 100, 100);
+	--bg-color: var(--none-color);
 	background:#fff;
 }
 
@@ -162,6 +163,22 @@ ol, ul {
 	text-transform: uppercase;
 	justify-content: center;
 	align-items: center;
+}
+
+.keyboard-button[letterstatus='unguessed'] {
+	background-color: #fff;
+}
+
+.keyboard-button[letterstatus='none'] {
+	background-color: var(--none-color);
+}
+
+.keyboard-button[letterstatus='includes'] {
+	background-color: var(--includes-color);
+}
+
+.keyboard-button[letterstatus='right'] {
+	background-color: var(--right-color);
 }
 
 .keyboard-button-backspace {
