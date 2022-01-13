@@ -2,13 +2,16 @@
 	--includes-color: rgb(186, 196, 55);
 	--right-color: rgb(45, 170, 45);
 	--none-color: rgb(100, 100, 100);
-	--keyboard-button-height: 48px;
 	--wrong-word-color: rgb(206, 36, 36);
+
+	--keyboard-button-height: 48px;
+	--board-height: 420px;
+	--keyboard-height: 200px;
 }
 
 body {
 	font: 14px "Century Gothic", Futura, sans-serif;
-	margin: 20px;
+	margin: auto;
 }
   
 ol, ul {
@@ -38,7 +41,7 @@ ol, ul {
 
 .letter-board {
 	width: 350px;
-	height: 420px;
+	height: calc(var(--board-height) - var(--keyboard-height));
 	display: grid;
     grid-template-rows: repeat(6, 1fr);
     grid-gap: 5px;
@@ -139,6 +142,7 @@ ol, ul {
     justify-content: center;
 	margin: 10px;
 	flex-direction: column;
+	height: var(--keyboard-height);
 }
 
 .keyboard {

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import words from './words.json';
+import useWindowDimensions from './windowDimensions';
 
 const ROW_COUNT = 6;
 const LETTER_COUNT = 5;
@@ -37,7 +38,7 @@ class Game extends React.Component {
 		let animating = this.state.animating.slice();
 		let animationStart = this.state.animationStart.slice();
 		let wrongGuess = false;
-		let letterStatus = this.state.letterStatus;
+		let letterStatus = Object.assign({}, this.state.letterStatus);
 
 		if (i === 'backspace') {
 			if (this.state.currentSquare > 0) {
@@ -110,10 +111,8 @@ class Game extends React.Component {
 			animating: animating,
 			animationStart: animationStart,
 			wrongGuess: wrongGuess,
-			//letterStatus: letterStatus
+			letterStatus: letterStatus
 		});
-
-		//console.log(letterStatus);
 	}
 
 	checkWord(word) {
@@ -322,9 +321,22 @@ function KeyboardButton(props) {
 	}
 }
 
+function WindowDimension() {
+	const { height } = useWindowDimensions();
+	const root = document.documentElement;
+
+	let h = height;
+	root.style.setProperty('--board-height', "".concat(h, "px"));
+
+	return(
+		<div className='dummy'/>
+	);
+};
+
 ReactDOM.render(
 	<React.StrictMode>
 		<Game />
+		<WindowDimension />
 	</React.StrictMode>,
 	document.getElementById('root')
 );
